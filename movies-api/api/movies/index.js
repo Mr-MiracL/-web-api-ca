@@ -4,6 +4,7 @@ import express from 'express';
 import {
     getUpcomingMovies,getGenres
   } from '../tmdb-api';
+  import Reviews from '../models/Reviews.js';
   
 
 const router = express.Router();
@@ -52,4 +53,23 @@ router.get('/tmdb/genres', asyncHandler(async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch genres from TMDB', error: error.message });
     }
 }));
-export default router;
+// create new comments
+
+router.post('/reviews', async (req, res) => {
+    try {
+      const review = new Reviews(req.body); // 从请求体获取评论数据
+      const savedReview = await review.save();
+      res.status(201).json(savedReview);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+  router.get('/reviews/:movieId', async (req, res) => {
+    try {
+      const reviews = await Reviews.findByMovieId(req.params.movieId);
+      res.status(200).json(reviews);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  export default router;
