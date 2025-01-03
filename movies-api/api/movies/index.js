@@ -53,8 +53,26 @@ router.get('/tmdb/genres', asyncHandler(async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch genres from TMDB', error: error.message });
     }
 }));
+router.get("/tmdb/popular", async (req, res) => {
+  try {
+    const movies = await Movie.find().sort({ popularity: -1 }).limit(10);
+    res.status(200).json(movies);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch popular movies" });
+  }
+});
+router.get("/users/:userId/favorites", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    // 假设用户数据存储了收藏电影的 ID 列表
+    const user = await User.findById(userId);
+    const movies = await Movie.find({ _id: { $in: user.favoriteMovies } });
+    res.status(200).json(movies);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch favorite movies" });
+  }
+});
 // create new comments
-
 router.post('/reviews', async (req, res) => {
     try {
       const review = new Reviews(req.body); // 从请求体获取评论数据
