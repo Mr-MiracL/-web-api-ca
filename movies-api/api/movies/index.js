@@ -64,6 +64,16 @@ router.post('/reviews', async (req, res) => {
       res.status(400).json({ error: error.message });
     }
   });
+  // GET: get users' comments from certain userID
+router.get('/reviews/user/:userId', async (req, res) => {
+  try {
+    const userReviews = await Reviews.find({ userId: req.params.userId });
+    res.status(200).json(userReviews);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
   router.get('/reviews/:movieId', async (req, res) => {
     try {
       const reviews = await Reviews.findByMovieId(req.params.movieId);
@@ -72,4 +82,33 @@ router.post('/reviews', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
+  // PUT: Modify comment content
+router.put('/reviews/:id', async (req, res) => {
+  try {
+    const updatedReview = await Reviews.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true } 
+    );
+    if (!updatedReview) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+    res.status(200).json(updatedReview);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+// DELETE: delete comments
+router.delete('/reviews/:id', async (req, res) => {
+  try {
+    const deletedReview = await Reviews.findByIdAndDelete(req.params.id);
+    if (!deletedReview) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+    res.status(200).json({ message: 'Review deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
   export default router;
