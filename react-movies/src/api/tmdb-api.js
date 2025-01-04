@@ -8,43 +8,28 @@ export const getMovies = async () => {
   )
   return response.json();
 };
-export const getMovie = (args) => {
-  //console.log(args)
-  const [, idPart] = args.queryKey;
-  const { id } = idPart;
-  return fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}`
-  ).then((response) => {
-    if (!response.ok) {
-      return response.json().then((error) => {
-        throw new Error(error.status_message || "Something went wrong");
-      });
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    throw error
- });
-};
-
-  export const getGenres = () => {
-    return fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?api_key=" +
-        process.env.REACT_APP_TMDB_KEY +
-        "&language=en-US"
-    ).then( (response) => {
-      if (!response.ok) {
-        return response.json().then((error) => {
-          throw new Error(error.status_message || "Something went wrong");
-        });
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      throw error
-   });
-  };
   
+export const getMovie = async ({queryKey}) => {
+  const response = await fetch('http://localhost:8080/api/movies/getMovie', {
+  headers: {
+    'Content-Type': 'application/json', 
+  'Authorization': window.localStorage.getItem('token')
+  },
+  method: 'post',
+  body: JSON.stringify({ args:queryKey })
+  });
+  return response.json();
+  };
+
+export const getGenres = async () => {
+  const response = await fetch(
+   'http://localhost:8080/api/movies/genres', {
+    headers: {
+      'Authorization': window.localStorage.getItem('token')
+    }
+});
+  return response.json();
+};
 export const getLanguages=async()=>{
   
   return fetch(

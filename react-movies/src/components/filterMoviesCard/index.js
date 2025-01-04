@@ -1,4 +1,4 @@
-import { getCountries, getGenres,getLanguages} from "../../api/tmdb-api";
+import {  getGenres,getLanguages} from "../../api/tmdb-api";
 import React, {useState, useEffect}  from "react";
 import Card from "@mui/material/Card";
 import { useQuery } from "react-query";
