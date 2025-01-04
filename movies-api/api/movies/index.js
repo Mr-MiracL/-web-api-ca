@@ -2,11 +2,10 @@ import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
 import {
-    getUpcomingMovies,getGenres
+    getUpcomingMovies,getGenres,getMovieReviews,getMovies,getMovie
   } from '../tmdb-api';
-  import Reviews from '../models/Reviews.js';
+import movieReviews from './movieReviews.js';
   
-
 const router = express.Router();
 
 router.get('/', asyncHandler(async (req, res) => {
@@ -29,7 +28,19 @@ router.get('/', asyncHandler(async (req, res) => {
     };
     res.status(200).json(returnObject);
 }));
-
+router.post("/getMovie", asyncHandler(async (req, res) => {
+  const { args } = req.body; // Extract args from request body
+  try {
+  const movie = await getMovie(args);
+  res.status(200).json(movie);
+  } catch (error) {
+  res.status(500).json({
+  message: error.message || "Failed to fetch movie.",
+  status_code: 500,
+  });
+  }
+  })
+);
 // Get movie details
 router.get('/:id', asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
@@ -75,7 +86,7 @@ router.get("/users/:userId/favorites", async (req, res) => {
 // create new comments
 router.post('/reviews', async (req, res) => {
     try {
-      const review = new Reviews(req.body); // 从请求体获取评论数据
+      const review = new movieReviews(req.body); 
       const savedReview = await review.save();
       res.status(201).json(savedReview);
     } catch (error) {
@@ -85,7 +96,7 @@ router.post('/reviews', async (req, res) => {
   // GET: get users' comments from certain userID
 router.get('/reviews/user/:userId', async (req, res) => {
   try {
-    const userReviews = await Reviews.find({ userId: req.params.userId });
+    const userReviews = await movieReviews.find({ userId: req.params.userId });
     res.status(200).json(userReviews);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -94,7 +105,7 @@ router.get('/reviews/user/:userId', async (req, res) => {
 
   router.get('/reviews/:movieId', async (req, res) => {
     try {
-      const reviews = await Reviews.findByMovieId(req.params.movieId);
+      const reviews = await movieReviews.findByMovieId(req.params.movieId);
       res.status(200).json(reviews);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -103,7 +114,7 @@ router.get('/reviews/user/:userId', async (req, res) => {
   // PUT: Modify comment content
 router.put('/reviews/:id', async (req, res) => {
   try {
-    const updatedReview = await Reviews.findByIdAndUpdate(
+    const updatedReview = await movieReviews.findByIdAndUpdate(
       req.params.id, 
       req.body, 
       { new: true } 
@@ -119,7 +130,7 @@ router.put('/reviews/:id', async (req, res) => {
 // DELETE: delete comments
 router.delete('/reviews/:id', async (req, res) => {
   try {
-    const deletedReview = await Reviews.findByIdAndDelete(req.params.id);
+    const deletedReview = await movieReviews.findByIdAndDelete(req.params.id);
     if (!deletedReview) {
       return res.status(404).json({ error: 'Review not found' });
     }
