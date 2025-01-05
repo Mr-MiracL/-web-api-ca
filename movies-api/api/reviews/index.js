@@ -13,14 +13,14 @@ router.get('/:movieId', asyncHandler(async (req, res) => {
 
 // 添加一条新的评论
 router.post('/', asyncHandler(async (req, res) => {
-  const { movieId, userId, review, rating } = req.body;
+  const { movieId, userId, review, } = req.body;
 
-  if (!movieId || !userId || !review || rating == null) {
+  if (!movieId || !userId || !review ) {
     res.status(400).json({ error: 'All fields are required' });
     return;
   }
 
-  const newReview = new Review({ movieId, userId, review, rating });
+  const newReview = new Review({ movieId, userId, review, });
   await newReview.save();
   res.status(201).json(newReview);
 }));

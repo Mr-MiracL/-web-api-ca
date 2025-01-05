@@ -13,7 +13,16 @@ router.get('/', async (req, res) => {
 });
 
 //.... code as before
-
+router.post('/signup', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+      const user = new User({ username, password });
+      await user.save();
+      res.status(201).json({ message: 'User created successfully' });
+    } catch (error) {
+      res.status(400).json({ error: 'User creation failed' });
+    }
+  });
 // register(Create)/Authenticate User
 router.post('/', asyncHandler(async (req, res) => {
     try {

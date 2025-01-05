@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import  { useContext } from 'react';
+import { AuthContext } from "../../contexts/authorContext";
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
@@ -40,7 +42,25 @@ const SiteHeader = ({ history }) => {
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const HeaderState = () => {
+    const { user, logout } = useContext(AuthContext);
+  
+    return (
+      <header>
+        <nav>
+          <a href="/">Home</a>
+          {user ? (
+            <>
+              <a href="/dashboard">Dashboard</a>
+              <button onClick={logout}>Logout</button>
+            </>
+          ) : (
+            <a href="/login">Login</a>
+          )}
+        </nav>
+      </header>
+    );
+  };
   return (
     <>
       <AppBar position="fixed" color="secondary">

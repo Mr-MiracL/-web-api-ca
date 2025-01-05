@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-
+import userModel from '../users/userModel';
 import {
     getUpcomingMovies,
     getGenres,getMovie,
@@ -10,6 +10,7 @@ import {
     getMovieImages,
     getPopulars,
     getMovieReviews,
+    getActorMovies,
     
   } from '../tmdb-api';
 
@@ -22,6 +23,37 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json(movies);
 }));
 
+router.post(
+  "/favorites",
+  asyncHandler(async (req, res) => {
+    const { userId, movieId } = req.body;
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.favorites.includes(movieId)) {
+      user.favorites.push(movieId);
+      await user.save();
+    }
+
+    res.status(200).json({ message: "Movie added to favorites" });
+  })
+);
+router.get(
+  "/favorites/:userId",
+  asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const user = await userModel.findById(userId).populate("favorites");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user.favorites);
+  })
+);
 
 
 router.post("/getMovie", asyncHandler(async (req, res) => {
@@ -95,7 +127,19 @@ router.get("/getNowplayings", async (req, res) => {
   const now_playing = await getNowPlayings();
     res.status(200).json(now_playing);
 });
-
+router.post("/getActorMovies", asyncHandler(async (req, res) => {
+  const { args } = req.body; 
+  try {
+  const movie = await getActorMovies(args);
+  res.status(200).json(movie);
+  } catch (error) {
+  res.status(500).json({
+  message: error.message || "Failed to fetch movie.",
+  status_code: 500,
+  });
+  }
+  })
+);
 router.get("/users/:userId/favorites", async (req, res) => {
   const { userId } = req.params;
   try {
