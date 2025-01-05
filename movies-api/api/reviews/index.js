@@ -1,10 +1,10 @@
 import express from 'express';
-import Review from '../models/reviewModel.js';
+import Review from './reviewModel.js';
 import asyncHandler from 'express-async-handler';
 
 const router = express.Router();
 
-// 获取某个电影的所有评论
+
 router.get('/:movieId', asyncHandler(async (req, res) => {
   const { movieId } = req.params;
   const reviews = await Review.find({ movieId });

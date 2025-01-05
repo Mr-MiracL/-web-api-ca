@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const getMovies = async () => {
   const response = await fetch(
     'http://localhost:8080/api/movies', {
@@ -69,7 +71,6 @@ export const getMovieReviews = async ({ queryKey }) => {
   });
   return response.json();
 };
-
  
   export const getNowPlayings = async() => {
     const response = await fetch(
@@ -140,4 +141,27 @@ export const getMovieReviews = async ({ queryKey }) => {
     .catch((error) => {
        throw error
     });
+  };
+ 
+  export const getReviewsByMovie = async (movieId) => {
+    const response = await axios.get(`http://localhost:8080/api/reviews/${movieId}`);
+    return response.data;
+  };
+  
+  // 添加一条评论
+  export const addReview = async (reviewData) => {
+    const response = await axios.post(`http://localhost:8080/api/reviews/`, reviewData);
+    return response.data;
+  };
+  
+  // 更新评论
+  export const updateReview = async (reviewId, reviewData) => {
+    const response = await axios.put(`http://localhost:8080/api/reviews//${reviewId}`, reviewData);
+    return response.data;
+  };
+  
+  // 删除评论
+  export const deleteReview = async (reviewId) => {
+    const response = await axios.delete(`http://localhost:8080/api/reviews/}/${reviewId}`);
+    return response.data;
   };

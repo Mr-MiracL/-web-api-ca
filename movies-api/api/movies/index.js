@@ -9,9 +9,7 @@ import {
     getNowPlayings,
     getMovieImages,
     getPopulars,
-    getActorMovies,
-    getCredits,
-    getActorDetails,
+    getMovieReviews,
     
   } from '../tmdb-api';
 
@@ -43,6 +41,19 @@ router.post("/getMovieImages", asyncHandler(async (req, res) => {
   const { args } = req.body; 
   try {
   const movie = await getMovieImages(args);
+  res.status(200).json(movie);
+  } catch (error) {
+  res.status(500).json({
+  message: error.message || "Failed to fetch movie.",
+  status_code: 500,
+  });
+  }
+  })
+);
+router.post("/getMovieReviews", asyncHandler(async (req, res) => {
+  const { args } = req.body; 
+  try {
+  const movie = await getMovieReviews(args);
   res.status(200).json(movie);
   } catch (error) {
   res.status(500).json({
@@ -84,19 +95,7 @@ router.get("/getNowplayings", async (req, res) => {
   const now_playing = await getNowPlayings();
     res.status(200).json(now_playing);
 });
-router.post("/getActorMovies", asyncHandler(async (req, res) => {
-  const { args } = req.body; // Extract args from request body
-  try {
-  const actorMovie = await getActorMovies(args);
-  res.status(200).json(actorMovie);
-  } catch (error) {
-  res.status(500).json({
-  message: error.message || "Failed to fetch movie.",
-  status_code: 500,
-  });
-  }
-  })
-);
+
 router.get("/users/:userId/favorites", async (req, res) => {
   const { userId } = req.params;
   try {
