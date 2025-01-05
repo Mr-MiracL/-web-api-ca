@@ -21,13 +21,13 @@ A bullet-point list of the ADDITIONAL features you have implemented in the API *
 Describe any configuration that needs to take place before running the API. For example, creating an `.env` file and what variables to put in it. Give an example of how this might be done.
 
 An env file was build.
-the variables are:
-NODE_ENV=development
-PORT=8080
-HOST=localhost
-MONGO_DB=
-TMDB_KEY=
-SECRET=
+- the variables are:
+- NODE_ENV=development
+- PORT=8080
+- HOST=localhost
+- MONGO_DB=
+- TMDB_KEY=
+- SECRET=
 
 
 ## API Design
