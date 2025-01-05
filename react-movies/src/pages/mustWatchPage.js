@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
-import { getUpcomingMovie } from "../api/tmdb-api";
+import { getUpcomingMovies } from "../api/tmdb-api";
 import Spinner from '../components/spinner'
 import WriteReview from "../components/cardIcons/writeReview";
 import AddToMustWatchIcon from "../components/cardIcons/addToMustWatch";
@@ -17,7 +17,7 @@ const MustWatchPage = () => {
   const mustWatchQueries = useQueries(
     movieIdsSafe.map((movieId) => ({
       queryKey: ["movie", { id: movieId }],
-      queryFn: getUpcomingMovie,
+      queryFn: getUpcomingMovies,
     }))
   );
 
